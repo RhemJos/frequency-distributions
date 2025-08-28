@@ -76,7 +76,7 @@ class AnswersComparator:
         fieldnames = ['id'] + self.existing_columns + ["total_differences", "percentage_differences"]
         fieldnames = self.custom_field_order()
 
-        for _, row in self.data_file[:3].iterrows():
+        for _, row in self.data_file.iterrows():
             id_ = row['id']
             answers = json.loads(row['answers'])
             ai_answers = json.loads(row['ai_answers'])
@@ -105,7 +105,7 @@ class AnswersComparator:
             self.results.append(new_row)
 
             with open(self.csv_output_file, 'w', newline='', encoding='utf-8') as csv_output_file:
-                writer = csv.DictWriter(csv_output_file, fieldnames=fieldnames)
+                writer = csv.DictWriter(csv_output_file, fieldnames=fieldnames, delimiter=';')
                 writer.writeheader()
                 writer.writerows(self.results)       
 
