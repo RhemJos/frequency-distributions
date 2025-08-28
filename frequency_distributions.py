@@ -47,8 +47,8 @@ class FrequencyDistribution:
 
         plt.figure(figsize=(max(12, len(totals) // 3), 8))  # Ajusta el ancho según la cantidad de columnas
         bars = plt.bar(totals.index, totals.values, color='green', alpha=0.7)
-        plt.title('Frecuencia de diferencias por campo')
-        plt.xlabel("Campo")
+        plt.title('Frecuencia de diferencias por Campos y Preguntas')
+        plt.xlabel("Campos y Preguntas")
         plt.ylabel("Total de diferencias")
         plt.xticks(rotation=90, fontsize=8)
         plt.tight_layout()
@@ -60,8 +60,8 @@ class FrequencyDistribution:
             plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), label,
                     ha='center', va='bottom', fontsize=7)
 
-        plt.savefig(os.path.join(self.output_dir, "diferencias_totales_por_campo.png"))
-        print(f"Guardado: Gráfico único de diferencias en '{self.output_dir}'")
+        plt.savefig(os.path.join(self.output_dir, "diferencias_totales_campos_preguntas.png"))
+        print(f"Guardado: Gráfico completo de diferencias en '{self.output_dir}'")
         plt.close()
 
 
@@ -116,12 +116,12 @@ class FrequencyDistribution:
         if 'id' in columns:
             columns.remove('id')
 
-        special_cols = [col for col in columns if any(col.startswith(f"{sp}_") for sp in special_fields)]
+        special_cols = [col for col in columns if any(col.startswith(f"{sp}") for sp in special_fields)]
 
         for start, end in group_ranges:
             group_cols = []
             for col in columns:
-                match = re.match(r'^(\d+)(\.\d+)?_', col)
+                match = re.match(r'^(\d+)(\.\d+)?', col)
                 if match:
                     q_num = int(match.group(1))
                     if start <= q_num <= end:
@@ -129,6 +129,7 @@ class FrequencyDistribution:
             if start == 1:
                 group_cols = special_cols + group_cols
             groups.append((f"{start}-{end}", group_cols))
+        # print(groups)
         return groups
 
     def comparator_charts_by_group(self):
