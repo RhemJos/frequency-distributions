@@ -40,7 +40,8 @@ class FrequencyDistribution:
     def comparator_charts(self):
         os.makedirs(self.output_dir, exist_ok=True)
         # totals = self.data_file[self.data_file.columns[1:]].sum()
-        cols = self.data_file.columns[1:]
+        # cols = self.data_file.columns[1:]
+        cols = list(self.data_file.columns[2:]) + [self.data_file.columns[1]]
         totals = self.data_file[cols[:-1]].sum()
         percentage_avg = self.data_file[cols[-1]].mean()
         totals[cols[-1]] = percentage_avg
@@ -205,7 +206,8 @@ class FrequencyDistribution:
 
     def comparator_charts_totals(self):
         os.makedirs(self.output_dir, exist_ok=True)
-        cols = self.data_file.columns[-2:]
+        # cols = self.data_file.columns[-2:]
+        cols = [self.data_file.columns[-1], self.data_file.columns[1]]
         # totals = self.data_file[cols].sum()
         totals = self.data_file[cols[:-1]].sum()
         percentage_avg = self.data_file[cols[-1]].mean()
@@ -233,8 +235,10 @@ class FrequencyDistribution:
 
 
 if __name__ == "__main__":
-    csv_path = "boletas_d10.csv"
-    Freq = FrequencyDistribution(csv_path)
-    Freq.generate_charts()
-    Freq_1 = FrequencyDistribution(csv_path, sample_size=100, output_dir="frequency_charts_sample")
-    Freq_1.generate_charts()
+    # csv_path = "boletas_d10.csv"
+    # Freq = FrequencyDistribution(csv_path)
+    # Freq.generate_charts()
+    # Freq_1 = FrequencyDistribution(csv_path, sample_size=100, output_dir="frequency_charts_sample")
+    # Freq_1.generate_charts()
+    csv_path = "./domains_data/boletas_d10.csv"
+    Freq = FrequencyDistribution(csv_path, output_dir="frequency_charts_sample_3")

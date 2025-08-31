@@ -89,14 +89,14 @@ class AnswersComparator:
         ordered_questions = [q for _, q in sorted(questions, key=lambda x: (x[0][0], x[0][1]))]
 
         ordered = (
-            ['id'] +
+            ['id', "percentage_differences"] +
             sorted(dominio) +
             sorted(unidad) +
             sorted(grado) +
             sorted(contador) +
             ordered_questions +
             sorted(other) +
-            ["total_differences", "percentage_differences"]
+            ["total_differences"]
         )
         return ordered
 
