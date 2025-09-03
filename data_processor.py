@@ -25,6 +25,7 @@ class DataProcessor:
             freq_folder = f"frequency_charts_{base_name}"
             freq = FrequencyDistribution(processed_csv, output_dir=freq_folder)
             freq.comparator_charts()  # Gráfico completo
+            freq.comparator_charts_answers()
             freq.comparator_charts_by_group()  #
             freq.comparator_charts_by_group_total()
             freq.comparator_charts_totals()

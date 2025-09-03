@@ -10,8 +10,10 @@ class FrequencyDistribution:
         self.output_dir = output_dir
 
     def generate_charts(self):
+        self.data_file = pd.read_csv(csv_path, sep=',', encoding='latin1')
         os.makedirs(self.output_dir, exist_ok=True)
-        for column in self.data_file.columns[6:]:
+        for column in self.data_file.columns[5:]:
+            print(f"Procesando columna: {column}")
             frequency = self.data_file[column].value_counts(dropna=True)
             if len(frequency) == 0 or frequency.sum() == 0:
                 continue
@@ -21,11 +23,18 @@ class FrequencyDistribution:
             except Exception:
                 frequency = frequency.sort_index()
 
-            plt.figure(figsize=(10, 6))
+            num_categories = len(frequency)
+            fig_width = min(30, max(10, num_categories * 0.8))  # Ajuste dinámico
+            fig_height = 8
+            plt.figure(figsize=(fig_width, fig_height))
+            # plt.figure(figsize=(10, 6))
             bars = plt.bar(frequency.index.astype(str), frequency.values, color='green', alpha=0.7)
             plt.title(f'Distribución de Frecuencias: {column}')
             plt.xlabel("Respuesta")
             plt.ylabel("Frecuencia")
+
+            plt.xticks(rotation=45, ha='right', fontsize=8)
+            plt.tight_layout()
 
             for bar, value in zip(bars, frequency.values):
                 plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), str(value),
@@ -65,7 +74,33 @@ class FrequencyDistribution:
         print(f"Guardado: Gráfico completo de diferencias en '{self.output_dir}'")
         plt.close()
 
+    def comparator_charts_answers(self):
+        os.makedirs(self.output_dir, exist_ok=True)
+        # totals = self.data_file[self.data_file.columns[1:]].sum()
+        cols = self.data_file.columns[2:]
+        # cols = list(self.data_file.columns[2:-1]) + [self.data_file.columns[1]]
+        totals = self.data_file[cols[:-1]].sum()
+        # percentage_avg = self.data_file[cols[-1]].mean()
+        # totals[cols[-1]] = percentage_avg
 
+        plt.figure(figsize=(max(12, len(totals) // 3), 8))  # Ajusta el ancho según la cantidad de columnas
+        bars = plt.bar(totals.index, totals.values, color='green', alpha=0.7)
+        plt.title('Frecuencia de diferencias por Campos y Preguntas')
+        plt.xlabel("Campos y Preguntas")
+        plt.ylabel("Total de diferencias")
+        plt.xticks(rotation=90, fontsize=8)
+        plt.tight_layout()
+        for bar, col, value in zip(bars, totals.index, totals.values):
+            if "percentage" in col:
+                label = f"{round(value, 2)}%"
+            else:
+                label = str(int(value))
+            plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), label,
+                    ha='center', va='bottom', fontsize=7)
+
+        plt.savefig(os.path.join(self.output_dir, "diferencias_preguntas.png"))
+        print(f"Guardado: Gráfico completo de diferencias de preguntas en '{self.output_dir}'")
+        plt.close()
 
         # for column in self.data_file.columns[1:]:
         #     frequency = self.data_file[column].value_counts(dropna=True)
@@ -240,5 +275,6 @@ if __name__ == "__main__":
     # Freq.generate_charts()
     # Freq_1 = FrequencyDistribution(csv_path, sample_size=100, output_dir="frequency_charts_sample")
     # Freq_1.generate_charts()
-    csv_path = "./domains_data/boletas_d10.csv"
-    Freq = FrequencyDistribution(csv_path, output_dir="frequency_charts_sample_3")
+    csv_path = "for_frequency_distributions.csv"
+    Freq = FrequencyDistribution(csv_path, output_dir="frequency_charts_pre_final")
+    Freq.generate_charts()
